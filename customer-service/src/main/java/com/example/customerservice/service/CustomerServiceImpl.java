@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,5 +58,27 @@ public class CustomerServiceImpl implements CustomerService {
         Matcher matcher = pattern.matcher(customerEmail);
 
         return matcher.matches();
+    }
+
+    @Override
+    public CustomerDTO findCustomerByCustomerSecret(String customerSecret) {
+        CustomerDTO customerDTO;
+        Optional<Customer> customer = customerRepository.findByCustomerSecret(customerSecret);
+
+        if (customer.isEmpty()) {
+            return null;
+        } else {
+            customerDTO = new CustomerDTO(
+                    customer.get().getCustomerName(),
+                    customer.get().getCustomerEmail(),
+                    customer.get().getCustomerContact(),
+                    customer.get().getCustomerAddress(),
+                    customer.get().isWriteAccess(),
+                    customer.get().getCustomerSecret(),
+                    customer.get().getOrderCreationLimit()
+            );
+            return customerDTO;
+        }
+
     }
 }

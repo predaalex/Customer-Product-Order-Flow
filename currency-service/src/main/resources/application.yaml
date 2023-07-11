@@ -1,5 +1,5 @@
 spring:
   application:
-    name: order-service
+    name: currency-service
   config:
     import: "optional:configserver:http://localhost:8088"

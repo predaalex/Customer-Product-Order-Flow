@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,20 @@ public class CustomerController {
         return customerService.getAllCustomers();
     }
 
-    @PutMapping()
+    @GetMapping("/{customerSecret}")
+    public CustomerDTO findCustomerByCustomerSecret(@PathVariable("customerSecret") String customerSecret) {
+        CustomerDTO customerDTO = customerService.findCustomerByCustomerSecret(customerSecret);
+
+        if (customerDTO == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer with secret " + customerSecret +
+                    " NOT found!");
+        } else {
+            return customerDTO;
+        }
+    }
+
+
+    @PostMapping()
     public ResponseEntity<Object> addCustomer(@RequestBody CustomerDTO customerDTO) {
 
         boolean secretExists = customerService.checkIfSecretExists(customerDTO.getCustomerSecret());
@@ -57,14 +71,11 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Customer Email is invalid");
         } else {
             customerService.addCustomer(customerDTO);
-            LOGGER.info("CustomerDetails add SUCCESSFULL: {}", customerDTO.getCustomerName());
             Map<String, String> response = new HashMap<>();
 
-            response.put("Message", "Customer product order successfully created " +
-                    "and you customer will receive order details on email Shortly");
-            response.put("EmailTrigger", "Yes");
-            response.put("CustomerEmail", customerDTO.getCustomerEmail());
+            response.put("Message", "Customer Record successfully created");
 
+            LOGGER.info("CustomerDetails add SUCCESSFULL: {}", customerDTO.getCustomerName());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
     }
