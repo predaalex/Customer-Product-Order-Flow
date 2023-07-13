@@ -1,8 +1,6 @@
 package com.example.orderservice.service;
 
-import com.example.orderservice.dto.CustomerDTO;
-import com.example.orderservice.dto.OrderDTO;
-import com.example.orderservice.dto.ProductDTO;
+import com.example.orderservice.dto.*;
 import com.example.orderservice.entity.Order;
 import com.example.orderservice.entity.Product;
 import com.example.orderservice.repository.OrderRepository;
@@ -37,14 +35,33 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order(orderDTO);
         Product product = order.getProduct();
         if (product != null && product.getProductSerialNumber() != null) {
-            Optional<Product> existingProduct = productRepository.findByProductSerialNumber(product.getProductSerialNumber());
-            if (existingProduct.isPresent()) {
-                order.setProduct(existingProduct.get());
-            } else {
-                product = productRepository.save(product);
-                order.setProduct(product);
-            }
+            product = productRepository.save(product);
+            order.setProduct(product);
         }
         orderRepository.save(order);
     }
+
+    @Override
+    public boolean checkInventory(int productStock, int orderQuantity) {
+        return productStock >= orderQuantity;
+    }
+
+    @Override
+    public void updateOrderQuantity(UpdateOrderDTO newOrderDTO) {
+        Order order = orderRepository.findById(newOrderDTO.getOrderNumber()).get();
+        Product product = order.getProduct();
+
+        product.setProductQuantity(newOrderDTO.getUpdateProductDTO().getProductQuantity());
+        order.setProduct(product);
+        order.setOrderStatus("Updated");
+
+        orderRepository.save(order);
+    }
+
+    @Override
+    public Order getOrderByOrderId(Long orderId) {
+        return orderRepository.findById(orderId).get();
+    }
+
+
 }

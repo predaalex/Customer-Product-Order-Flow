@@ -2,6 +2,7 @@ package com.example.orderservice.config;
 
 import com.example.orderservice.client.CurrencyClient;
 import com.example.orderservice.client.CustomerClient;
+import com.example.orderservice.client.ProductClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancedExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
@@ -46,5 +47,21 @@ public class WebClientConfig {
                 .builder(WebClientAdapter.forClient(currencyWebClient()))
                 .build();
         return httpServiceProxyFactory.createClient(CurrencyClient.class);
+    }
+
+    @Bean
+    public WebClient productWebClient() {
+        return WebClient.builder()
+                .baseUrl("http://product-service")
+                .filter(filterFunction)
+                .build();
+    }
+
+    @Bean
+    public ProductClient productClient() {
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory
+                .builder(WebClientAdapter.forClient(productWebClient()))
+                .build();
+        return httpServiceProxyFactory.createClient(ProductClient.class);
     }
 }

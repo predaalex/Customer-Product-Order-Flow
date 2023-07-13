@@ -14,6 +14,10 @@ spring:
           uri: lb://currency-service
           predicates:
             - Path=/currencyConverter/**
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/product/**
 
 server:
   port: 8060

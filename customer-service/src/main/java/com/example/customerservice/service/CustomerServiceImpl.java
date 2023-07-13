@@ -81,4 +81,11 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
     }
+
+    @Override
+    public void updateWriteAccess(String customerSecret, boolean writeAccess) {
+        Customer customer = customerRepository.findByCustomerSecret(customerSecret).get();
+        customer.setWriteAccess(writeAccess);
+        customerRepository.save(customer);
+    }
 }

@@ -18,4 +18,6 @@ public interface CustomerService {
     boolean checkEmail(String customerEmail);
 
     CustomerDTO findCustomerByCustomerSecret(String customerSecret);
+
+    void updateWriteAccess(String customerSecret, boolean writeAccess);
 }

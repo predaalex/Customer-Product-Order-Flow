@@ -79,4 +79,10 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
     }
+
+    @PutMapping("/update-write-access/{customerSecret}/{writeAccess}")
+    public void updateWriteAccess(@PathVariable String customerSecret,
+                                  @PathVariable boolean writeAccess) {
+        customerService.updateWriteAccess(customerSecret, writeAccess);
+    }
 }
