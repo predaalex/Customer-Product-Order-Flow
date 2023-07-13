@@ -1,0 +1,260 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Customer-Product-Order-Flow",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8060"
+    }
+  ],
+  "tags": [
+    {
+      "name": "API-calls"
+    }
+  ],
+  "paths": {
+    "/order": {
+      "post": {
+        "tags": [
+          "API-calls"
+        ],
+        "summary": "With this endpoint, you will need to create a single product order for a customer with specific values",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Order add successfull {customerSecret}",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customerDetails": {
+      "post": {
+        "tags": [
+          "API-calls"
+        ],
+        "summary": "Using this  API endpoint, you must save the customer data into a database,which will allow you to retrieve additional customer information during our operations.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Customer Record successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/convert/{fromCurrency}/{value}": {
+      "get": {
+        "tags": [
+          "API-calls"
+        ],
+        "summary": "creating the order, you must convert the user currency details into RS using this endpoint",
+        "parameters": [
+          {
+            "name": "fromCurrency",
+            "in": "path",
+            "description": "The currency to convert from.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "USD"
+            }
+          },
+          {
+            "name": "value",
+            "in": "path",
+            "description": "The value to convert.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Customer Record successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "example": 800
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/updateProductQuantity": {
+      "put": {
+        "tags": [
+          "API-calls"
+        ],
+        "summary": "The customer will be able to update product quantity with all checks using this endpoint. For example, if an order has already been created but the customer wishes to change the quantity, he must comply with all applicable conditions.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Update Request has been Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "OrderDTO": {
+        "type": "object",
+        "properties": {
+          "customerSecret": {
+            "type": "integer",
+            "example": "customerName@customercontact"
+          },
+          "orderDate": {
+            "type": "string",
+            "example": "2022-02-13T00:00:00.000Z"
+          },
+          "orderStatus": {
+            "type": "string",
+            "example": "Created"
+          },
+          "product": {
+            "$ref": "#/components/schemas/product"
+          }
+        }
+      },
+      "product": {
+        "type": "object",
+        "properties": {
+          "productName": {
+            "type": "string",
+            "example": "Printer"
+          },
+          "productPrice": {
+            "type": "integer",
+            "example": 1000
+          },
+          "productCurrency": {
+            "type": "string",
+            "example": "RS"
+          },
+          "productSku": {
+            "type": "string",
+            "example": "234#ACDEF56"
+          },
+          "productSerialNumber": {
+            "type": "string",
+            "example": "234598-897654-1234"
+          },
+          "productQuantity": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "CustomerDTO": {
+        "type": "object",
+        "properties": {
+          "customerName": {
+            "type": "string",
+            "example": "XYZ"
+          },
+          "customerEmail": {
+            "type": "string",
+            "example": "XYZ@hcl.com"
+          },
+          "customerContact": {
+            "type": "string",
+            "example": 1111112223
+          },
+          "customerAddress": {
+            "type": "string",
+            "example": "Any address"
+          },
+          "writeAccess": {
+            "type": "boolean",
+            "example": true
+          },
+          "customerSecret": {
+            "type": "string",
+            "example": "customerName@customercontact"
+          },
+          "orderCreationLimit": {
+            "type": "integer",
+            "example": 3
+          }
+        }
+      },
+      "UpdateOrderDTO": {
+        "type": "object",
+        "properties": {
+          "orderNumber": {
+            "type": "integer",
+            "example": 20
+          },
+          "updateProductDTO": {
+            "$ref": "#/components/schemas/updateProductDTO"
+          }
+        }
+      },
+      "updateProductDTO": {
+        "type": "object",
+        "properties": {
+          "productSN": {
+            "type": "string",
+            "example": "234598-897654-1234"
+          },
+          "productQuantity": {
+            "type": "integer",
+            "example": 2
+          }
+        }
+      }
+    }
+  }
+}
